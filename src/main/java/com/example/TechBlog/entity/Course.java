@@ -38,7 +38,7 @@ public class Course {
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
-    private List<Module> modules = new ArrayList<>();
+    private List<Lesson> lessons = new ArrayList<>();
 
     @CreationTimestamp
     private LocalDateTime createdAt;

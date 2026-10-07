@@ -3,11 +3,11 @@ services:
     image: postgres:16-alpine
     container_name: techblog-postgres
     environment:
-      POSTGRES_USER: courser_blog
-      POSTGRES_PASSWORD: 123456
-      POSTGRES_DB: courser_blog
+      POSTGRES_DB: course_blog
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
