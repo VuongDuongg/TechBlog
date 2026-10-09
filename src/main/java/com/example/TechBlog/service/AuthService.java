@@ -13,15 +13,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Objects;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -36,7 +36,7 @@ public class AuthService {
     @Transactional
     public String register(RegisterRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new RuntimeException("Email is already taken!");
+            throw new IllegalArgumentException("Email is already taken!");
         }
 
         // Tìm role ROLE_USER, nếu chưa có thì tạo mới
@@ -45,14 +45,13 @@ public class AuthService {
                         Role.builder()
                                 .name("ROLE_USER")
                                 .description("Standard user role")
-                                .build()
-                ));
+                                .build()));
 
         User user = User.builder()
                 .fullName(request.getFullName())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .roles(Collections.singleton(userRole))
+                .roles(new HashSet<>(Set.of(userRole)))
                 .build();
 
         userRepository.save(user);
@@ -61,16 +60,20 @@ public class AuthService {
 
     public AuthResponse login(LoginRequest request) {
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
-        );
+                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtils.generateJwtToken(authentication);
 
-        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        List<String> roles = userDetails.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.toList());
+        if (!(authentication.getPrincipal() instanceof CustomUserDetails userDetails)) {
+            throw new IllegalStateException("Unexpected user details principal type");
+        }
+
+        List<String> roles = userDetails.getAuthorities() == null ? List.of()
+                : userDetails.getAuthorities().stream()
+                        .filter(Objects::nonNull)
+                        .map(authority -> Objects.toString(authority.getAuthority(), ""))
+                        .toList();
 
         return AuthResponse.builder()
                 .token(jwt)
