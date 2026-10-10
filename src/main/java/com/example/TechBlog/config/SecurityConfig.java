@@ -48,7 +48,7 @@ public class SecurityConfig {
                 // Public tài liệu Swagger/OpenAPI
                 .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/api-docs/**", "/v3/api-docs/**").permitAll()
                 // Cho phép xem bài viết, chuyên mục, khóa học (GET) mà không bắt buộc đăng nhập
-                .requestMatchers(HttpMethod.GET, "/api/posts/**", "/api/categories/**", "/api/courses/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/posts/**", "/api/categories/**", "/api/courses/**", "/api/lessons/**").permitAll()
                 // Mọi request còn lại (Tạo bài viết, sửa, xóa, ...) đều bắt buộc đăng nhập
                 .anyRequest().authenticated()
             );
