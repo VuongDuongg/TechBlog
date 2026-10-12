@@ -82,6 +82,7 @@ public class EnrollmentService {
                 .courseId(course.getId())
                 .courseTitle(course.getTitle())
                 .courseDescription(course.getDescription())
+                .courseThumbnailUrl(course.getThumbnailUrl())
                 .coursePrice(course.getPrice())
                 .status(enrollment.getStatus())
                 .progress(enrollment.getProgress())

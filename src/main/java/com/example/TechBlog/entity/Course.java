@@ -40,6 +40,9 @@ public class Course {
     @Builder.Default
     private List<Lesson> lessons = new ArrayList<>();
 
+    // THÊM DÒNG NÀY: Ảnh bìa khóa học
+    private String thumbnailUrl;
+
     @CreationTimestamp
     private LocalDateTime createdAt;
 

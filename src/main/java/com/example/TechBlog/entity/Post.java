@@ -28,6 +28,8 @@ public class Post{
 
     @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
+    
+    private String thumbnailUrl;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)

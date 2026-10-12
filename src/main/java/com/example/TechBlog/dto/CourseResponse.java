@@ -17,6 +17,7 @@ public class CourseResponse {
     private Long id;
     private String title;
     private String description;
+    private String thumbnailUrl;
     private BigDecimal price;
     private Long categoryId;
     private String categoryName;

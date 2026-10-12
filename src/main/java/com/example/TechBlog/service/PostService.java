@@ -63,6 +63,7 @@ public class PostService {
                 .title(request.getTitle())
                 .slug(request.getSlug())
                 .content(request.getContent())
+                .thumbnailUrl(request.getThumbnailUrl())
                 .category(category)
                 .author(author)
                 .build();
@@ -89,6 +90,7 @@ public class PostService {
         post.setTitle(request.getTitle());
         post.setSlug(request.getSlug());
         post.setContent(request.getContent());
+        post.setThumbnailUrl(request.getThumbnailUrl());
         post.setCategory(category);
 
         Post updatedPost = postRepository.save(post);
@@ -131,6 +133,7 @@ public class PostService {
                 .title(post.getTitle())
                 .slug(post.getSlug())
                 .content(post.getContent())
+                .thumbnailUrl(post.getThumbnailUrl())
                 .categoryId(post.getCategory() != null ? post.getCategory().getId() : null)
                 .categoryName(post.getCategory() != null ? post.getCategory().getName() : null)
                 .authorId(post.getAuthor() != null ? post.getAuthor().getId() : null)

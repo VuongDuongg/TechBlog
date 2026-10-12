@@ -20,6 +20,7 @@ public class EnrollmentResponse {
     private String courseTitle;
     private String courseDescription;
     private BigDecimal coursePrice;
+    private String courseThumbnailUrl;
     private EnrollmentStatus status;
     private Integer progress;
     private LocalDateTime enrolledAt;

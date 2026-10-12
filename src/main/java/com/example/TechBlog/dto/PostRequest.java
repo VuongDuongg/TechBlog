@@ -22,6 +22,8 @@ public class PostRequest {
     @NotBlank(message = "Content cannot be blank")
     private String content;
 
+    private String thumbnailUrl;
+
     @NotNull(message = "Category ID cannot be null")
     private Long categoryId;
 }

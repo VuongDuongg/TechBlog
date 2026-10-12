@@ -22,6 +22,8 @@ public class CourseRequest {
     @NotBlank(message = "Mô tả khóa học không được để trống")
     private String description;
 
+    private String thumbnailUrl;
+
     @NotNull(message = "Giá tiền không được để trống")
     @PositiveOrZero(message = "Giá tiền phải lớn hơn hoặc bằng 0")
     private BigDecimal price;

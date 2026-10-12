@@ -42,6 +42,7 @@ public class CourseService {
         Course course = Course.builder()
                 .title(request.getTitle())
                 .description(request.getDescription())
+                .thumbnailUrl(request.getThumbnailUrl())
                 .price(request.getPrice())
                 .category(category)
                 .build();
@@ -59,6 +60,7 @@ public class CourseService {
 
         course.setTitle(request.getTitle());
         course.setDescription(request.getDescription());
+        course.setThumbnailUrl(request.getThumbnailUrl());
         course.setPrice(request.getPrice());
         course.setCategory(category);
 

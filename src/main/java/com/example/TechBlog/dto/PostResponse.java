@@ -17,6 +17,7 @@ public class PostResponse {
     private String title;
     private String slug;
     private String content;
+    private String thumbnailUrl;
     private Long categoryId;
     private String categoryName;
     private Long authorId;
