@@ -5,7 +5,6 @@ import com.example.TechBlog.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -47,8 +46,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/auth/**").permitAll()
                 // Public tài liệu Swagger/OpenAPI
                 .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/api-docs/**", "/v3/api-docs/**").permitAll()
-                // Cho phép xem bài viết, chuyên mục, khóa học (GET) mà không bắt buộc đăng nhập
-                .requestMatchers(HttpMethod.GET, "/api/posts/**", "/api/categories/**", "/api/courses/**", "/api/lessons/**").permitAll()
+                // Cho phép xem bài viết, chuyên mục, khóa học (GET) mà không bắt buộc đă /api/courses/**", "/api/lessons/**").permitAll()
                 // Mọi request còn lại (Tạo bài viết, sửa, xóa, ...) đều bắt buộc đăng nhập
                 .anyRequest().authenticated()
             );
