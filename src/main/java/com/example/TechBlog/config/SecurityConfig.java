@@ -16,10 +16,16 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity // Cho phép dùng @PreAuthorize("hasRole('ADMIN')") trên method controller
+@EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
@@ -36,9 +42,40 @@ public class SecurityConfig {
         return authConfig.getAuthenticationManager();
     }
 
+    // 1. Cấu hình quy tắc CORS
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        
+        // Cho phép các nguồn gốc của Frontend (React, Vite, Vue, Next.js...)
+        configuration.setAllowedOrigins(Arrays.asList(
+                "http://localhost:3000",
+                "http://localhost:5173",
+                "http://localhost:4200"
+        ));
+        
+        // Cho phép các phương thức HTTP
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+        
+        // Cho phép tất cả các Header (đặc biệt là Authorization, Content-Type)
+        configuration.setAllowedHeaders(List.of("*"));
+        
+        // Cho phép gửi kèm cookie / thông tin xác thực nếu cần
+        configuration.setAllowCredentials(true);
+        
+        // Thời gian cache kết quả kiểm tra Pre-flight (3600 giây = 1 giờ) để trình duyệt không phải hỏi lại liên tục
+        configuration.setMaxAge(3600L);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration); // Áp dụng cho mọi API
+        return source;
+    }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+            // 2. Kích hoạt cấu hình CORS đã khai báo ở trên
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(csrf -> csrf.disable())
             .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
