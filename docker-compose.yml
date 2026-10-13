@@ -18,7 +18,7 @@ services:
   # 2. Backend Spring Boot
   backend:
     build:
-      context: .
+      context: ./backend
       dockerfile: Dockerfile
     container_name: techblog-backend
     restart: unless-stopped

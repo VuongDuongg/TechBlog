@@ -1,0 +1,34 @@
+# Build output
+target/
+build/
+*.jar
+*.war
+
+# Version control
+.git/
+.gitignore
+.gitattributes
+
+# IDE and Editor configurations
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/
+.settings/
+.classpath
+.project
+.factorypath
+.springBeans
+.sts4-cache
+
+# Environment & Local files
+.env
+*.env.local
+*.log
+
+# Documentation & Misc
+HELP.md
+README.md
+docker-compose.yml
+.dockerignore
