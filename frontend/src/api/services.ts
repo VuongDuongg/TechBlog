@@ -1,5 +1,5 @@
 import axiosClient from './axiosClient';
-import type { AuthResponse, Comment, Course, Enrollment, Lesson, PageResponse, Post } from '../types';
+import type { AuthResponse, Comment, Course, Enrollment, Lesson, PageResponse, Post, UserProfile } from '../types';
 
 export interface LoginPayload {
   email: string;
@@ -27,7 +27,17 @@ export const authApi = {
   },
 };
 
-// 2. Course Services
+// 2. User Services
+export const userApi = {
+  getProfile: async (): Promise<UserProfile> => {
+    return (await axiosClient.get('/users/me')) as unknown as UserProfile;
+  },
+  updateProfile: async (fullName: string): Promise<UserProfile> => {
+    return (await axiosClient.put('/users/me', { fullName })) as unknown as UserProfile;
+  },
+};
+
+// 3. Course Services
 export const courseApi = {
   getAll: async (page = 0, size = 9): Promise<PageResponse<Course>> => {
     return (await axiosClient.get(`/courses?page=${page}&size=${size}`)) as unknown as PageResponse<Course>;
@@ -37,14 +47,14 @@ export const courseApi = {
   },
 };
 
-// 3. Lesson Services
+// 4. Lesson Services
 export const lessonApi = {
   getByCourseId: async (courseId: number): Promise<Lesson[]> => {
     return (await axiosClient.get(`/lessons/course/${courseId}`)) as unknown as Lesson[];
   },
 };
 
-// 4. Enrollment Services
+// 5. Enrollment Services
 export const enrollmentApi = {
   enroll: async (courseId: number): Promise<Enrollment> => {
     return (await axiosClient.post(`/enrollments/courses/${courseId}`)) as unknown as Enrollment;
@@ -57,7 +67,7 @@ export const enrollmentApi = {
   },
 };
 
-// 5. Post Services
+// 6. Post Services
 export const postApi = {
   getAll: async (page = 0, size = 9): Promise<PageResponse<Post>> => {
     return (await axiosClient.get(`/posts?page=${page}&size=${size}`)) as unknown as PageResponse<Post>;
@@ -70,7 +80,7 @@ export const postApi = {
   },
 };
 
-// 6. Comment Services
+// 7. Comment Services
 export const commentApi = {
   getByPostId: async (postId: number, page = 0, size = 20): Promise<PageResponse<Comment>> => {
     return (await axiosClient.get(`/posts/${postId}/comments?page=${page}&size=${size}`)) as unknown as PageResponse<Comment>;
