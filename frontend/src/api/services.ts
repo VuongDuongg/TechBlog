@@ -1,5 +1,5 @@
 import axiosClient from './axiosClient';
-import type { AuthResponse, Course, Enrollment, Lesson, PageResponse, Post } from '../types';
+import type { AuthResponse, Comment, Course, Enrollment, Lesson, PageResponse, Post } from '../types';
 
 export interface LoginPayload {
   email: string;
@@ -59,7 +59,7 @@ export const enrollmentApi = {
 
 // 5. Post Services
 export const postApi = {
-  getAll: async (page = 0, size = 6): Promise<PageResponse<Post>> => {
+  getAll: async (page = 0, size = 9): Promise<PageResponse<Post>> => {
     return (await axiosClient.get(`/posts?page=${page}&size=${size}`)) as unknown as PageResponse<Post>;
   },
   getById: async (id: number): Promise<Post> => {
@@ -67,5 +67,18 @@ export const postApi = {
   },
   getBySlug: async (slug: string): Promise<Post> => {
     return (await axiosClient.get(`/posts/slug/${slug}`)) as unknown as Post;
+  },
+};
+
+// 6. Comment Services
+export const commentApi = {
+  getByPostId: async (postId: number, page = 0, size = 20): Promise<PageResponse<Comment>> => {
+    return (await axiosClient.get(`/posts/${postId}/comments?page=${page}&size=${size}`)) as unknown as PageResponse<Comment>;
+  },
+  create: async (postId: number, content: string): Promise<Comment> => {
+    return (await axiosClient.post(`/posts/${postId}/comments`, { content })) as unknown as Comment;
+  },
+  delete: async (id: number): Promise<void> => {
+    await axiosClient.delete(`/comments/${id}`);
   },
 };
