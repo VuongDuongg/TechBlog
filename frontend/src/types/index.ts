@@ -1,3 +1,11 @@
+// 0. Ánh xạ từ CategoryResponse.java
+export interface Category {
+  id: number;
+  name: string;
+  description?: string;
+  createdAt?: string;
+}
+
 // 1. Ánh xạ từ AuthResponse.java
 export interface AuthResponse {
   token: string;

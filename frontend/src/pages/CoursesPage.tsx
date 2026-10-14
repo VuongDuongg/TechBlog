@@ -129,7 +129,10 @@ export const CoursesPage: React.FC = () => {
                       }
                       alt={course.title}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                      loading="lazy"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src =
+                          'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=600&q=80';
+                      }}
                     />
                     <span className="absolute top-3 left-3 px-2.5 py-1 rounded-md text-xs font-bold bg-white/95 text-indigo-700 shadow-sm backdrop-blur-sm">
                       {course.categoryName || 'Lập trình'}

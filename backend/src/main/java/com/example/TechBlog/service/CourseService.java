@@ -7,18 +7,21 @@ import com.example.TechBlog.entity.Course;
 import com.example.TechBlog.exception.ResourceNotFoundException;
 import com.example.TechBlog.repository.CategoryRepository;
 import com.example.TechBlog.repository.CourseRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@RequiredArgsConstructor
 public class CourseService {
 
     private final CourseRepository courseRepository;
     private final CategoryRepository categoryRepository;
+
+    public CourseService(CourseRepository courseRepository, CategoryRepository categoryRepository) {
+        this.courseRepository = courseRepository;
+        this.categoryRepository = categoryRepository;
+    }
 
     // 1. Lấy danh sách khóa học (hỗ trợ phân trang)
     @Transactional(readOnly = true)
@@ -85,6 +88,7 @@ public class CourseService {
                 .id(course.getId())
                 .title(course.getTitle())
                 .description(course.getDescription())
+                .thumbnailUrl(course.getThumbnailUrl())
                 .price(course.getPrice())
                 .categoryId(course.getCategory().getId())
                 .categoryName(course.getCategory().getName())

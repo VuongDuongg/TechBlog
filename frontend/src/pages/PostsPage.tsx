@@ -128,7 +128,10 @@ export const PostsPage: React.FC = () => {
                       }
                       alt={post.title}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                      loading="lazy"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src =
+                          'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=600&q=80';
+                      }}
                     />
                     <span className="absolute top-3 left-3 px-2.5 py-1 rounded-md text-xs font-bold bg-white/95 text-violet-700 shadow-sm backdrop-blur-sm">
                       {post.categoryName || 'Công nghệ'}

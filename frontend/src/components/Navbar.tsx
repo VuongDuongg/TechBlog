@@ -133,6 +133,16 @@ export const Navbar: React.FC = () => {
                         <User className="w-4 h-4 text-violet-600" />
                         <span>Hồ sơ cá nhân</span>
                       </Link>
+                      {isAdmin && (
+                        <Link
+                          to="/admin"
+                          onClick={() => setUserDropdownOpen(false)}
+                          className="flex items-center gap-2.5 px-4 py-2 text-xs font-semibold text-amber-700 hover:bg-amber-50 transition-colors"
+                        >
+                          <ShieldAlert className="w-4 h-4 text-amber-600" />
+                          <span>Trang Quản trị (Admin)</span>
+                        </Link>
+                      )}
                     </div>
                     <div className="border-t border-slate-100">
                       <button
@@ -241,6 +251,16 @@ export const Navbar: React.FC = () => {
                     <User className="w-4 h-4 text-violet-600" />
                     <span>Hồ sơ cá nhân</span>
                   </Link>
+                  {isAdmin && (
+                    <Link
+                      to="/admin"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold text-amber-700 bg-amber-50 hover:bg-amber-100 transition-colors"
+                    >
+                      <ShieldAlert className="w-4 h-4 text-amber-600" />
+                      <span>Trang Quản trị (Admin)</span>
+                    </Link>
+                  )}
                 </div>
                 <button
                   type="button"

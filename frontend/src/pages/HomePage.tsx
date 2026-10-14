@@ -169,7 +169,10 @@ export const HomePage: React.FC = () => {
                     }
                     alt={course.title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    loading="lazy"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src =
+                        'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=600&q=80';
+                    }}
                   />
                   <div className="absolute top-3 left-3 px-2.5 py-1 rounded-md text-xs font-semibold bg-white/90 backdrop-blur-sm text-indigo-700 shadow-sm">
                     {course.categoryName || 'Lập trình'}
@@ -256,7 +259,10 @@ export const HomePage: React.FC = () => {
                     }
                     alt={post.title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    loading="lazy"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src =
+                        'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=600&q=80';
+                    }}
                   />
                   <div className="absolute top-3 left-3 px-2.5 py-1 rounded-md text-xs font-semibold bg-white/90 backdrop-blur-sm text-violet-700 shadow-sm">
                     {post.categoryName || 'Kiến trúc'}

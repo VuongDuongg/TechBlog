@@ -11,6 +11,7 @@ import { PostsPage } from './pages/PostsPage';
 import { PostDetailPage } from './pages/PostDetailPage';
 import { MyCoursesPage } from './pages/MyCoursesPage';
 import { ProfilePage } from './pages/ProfilePage';
+import { AdminDashboardPage } from './pages/AdminDashboardPage';
 
 const App: React.FC = () => {
   return (
@@ -29,6 +30,7 @@ const App: React.FC = () => {
               <Route path="/posts/:slug" element={<PostDetailPage />} />
               <Route path="/my-courses" element={<MyCoursesPage />} />
               <Route path="/profile" element={<ProfilePage />} />
+              <Route path="/admin" element={<AdminDashboardPage />} />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </main>
