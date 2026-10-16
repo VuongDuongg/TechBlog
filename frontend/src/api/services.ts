@@ -4,6 +4,7 @@ import type {
   Category,
   Comment,
   Course,
+  CourseProgress,
   Enrollment,
   Lesson,
   PageResponse,
@@ -132,6 +133,12 @@ export const enrollmentApi = {
   },
   getMyCourses: async (page = 0, size = 10): Promise<PageResponse<Enrollment>> => {
     return (await axiosClient.get(`/enrollments/my-courses?page=${page}&size=${size}`)) as unknown as PageResponse<Enrollment>;
+  },
+  getProgress: async (courseId: number): Promise<CourseProgress> => {
+    return (await axiosClient.get(`/enrollments/courses/${courseId}/progress`)) as unknown as CourseProgress;
+  },
+  toggleProgress: async (courseId: number, lessonId: number): Promise<CourseProgress> => {
+    return (await axiosClient.post(`/enrollments/courses/${courseId}/lessons/${lessonId}/toggle`)) as unknown as CourseProgress;
   },
 };
 

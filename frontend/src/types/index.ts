@@ -95,3 +95,14 @@ export interface PageResponse<T> {
   size: number;
   number: number;
 }
+
+// 9. Ánh xạ từ CourseProgressResponse.java
+export interface CourseProgress {
+  courseId: number;
+  courseTitle: string;
+  totalLessons: number;
+  completedCount: number;
+  progressPercentage: number;
+  status: 'ACTIVE' | 'COMPLETED';
+  completedLessonIds: number[];
+}

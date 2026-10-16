@@ -125,7 +125,7 @@ export const MyCoursesPage: React.FC = () => {
                   </div>
 
                   <Link
-                    to={`/courses/${item.courseId}`}
+                    to={`/learning/${item.courseId}`}
                     className="mt-4 w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 transition-colors shadow-sm"
                   >
                     <PlayCircle className="w-4 h-4" />

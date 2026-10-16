@@ -307,9 +307,18 @@ export const CourseDetailPage: React.FC = () => {
               </div>
 
               {isEnrolled ? (
-                <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm flex items-center gap-2 font-medium">
-                  <CheckCircle2 className="w-5 h-5 text-emerald-600 flex-shrink-0" />
-                  <span>Bạn đã sở hữu khóa học này!</span>
+                <div className="space-y-3">
+                  <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm flex items-center gap-2 font-medium">
+                    <CheckCircle2 className="w-5 h-5 text-emerald-600 flex-shrink-0" />
+                    <span>Bạn đã sở hữu khóa học này!</span>
+                  </div>
+                  <Link
+                    to={`/learning/${course.id}`}
+                    className="w-full flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl font-bold text-sm text-white bg-indigo-600 hover:bg-indigo-700 shadow-md shadow-indigo-600/30 transition-all cursor-pointer"
+                  >
+                    <PlayCircle className="w-4 h-4" />
+                    <span>Vào phòng học ngay</span>
+                  </Link>
                 </div>
               ) : (
                 <button

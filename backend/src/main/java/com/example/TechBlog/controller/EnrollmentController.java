@@ -1,5 +1,6 @@
 package com.example.TechBlog.controller;
 
+import com.example.TechBlog.dto.CourseProgressResponse;
 import com.example.TechBlog.dto.EnrollmentResponse;
 import com.example.TechBlog.dto.EnrollmentStatusResponse;
 import com.example.TechBlog.service.EnrollmentService;
@@ -44,5 +45,22 @@ public class EnrollmentController {
             @PathVariable Long courseId,
             Authentication authentication) {
         return ResponseEntity.ok(enrollmentService.checkEnrollmentStatus(courseId, authentication.getName()));
+    }
+
+    // 4. Lấy chi tiết tiến độ học tập của khóa học (Bắt buộc đăng nhập)
+    @GetMapping("/courses/{courseId}/progress")
+    public ResponseEntity<CourseProgressResponse> getCourseProgress(
+            @PathVariable Long courseId,
+            Authentication authentication) {
+        return ResponseEntity.ok(enrollmentService.getCourseProgress(courseId, authentication.getName()));
+    }
+
+    // 5. Đánh dấu hoàn thành / chưa hoàn thành bài học (Bắt buộc đăng nhập)
+    @PostMapping("/courses/{courseId}/lessons/{lessonId}/toggle")
+    public ResponseEntity<CourseProgressResponse> toggleLessonProgress(
+            @PathVariable Long courseId,
+            @PathVariable Long lessonId,
+            Authentication authentication) {
+        return ResponseEntity.ok(enrollmentService.toggleLessonProgress(courseId, lessonId, authentication.getName()));
     }
 }
