@@ -48,7 +48,8 @@ public class UserController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserProfileResponse> updateUserRoles(
             @PathVariable Long id,
-            @Valid @RequestBody UpdateUserRoleRequest request) {
-        return ResponseEntity.ok(userService.updateUserRoles(id, request));
+            @Valid @RequestBody UpdateUserRoleRequest request,
+            Authentication authentication) {
+        return ResponseEntity.ok(userService.updateUserRoles(id, request, authentication.getName()));
     }
 }

@@ -45,11 +45,28 @@ public class UserService {
         return userRepository.findAll(pageable).map(this::mapToProfileResponse);
     }
 
-    // 4. ADMIN: Cập nhật Role cho một User bất kỳ theo ID
+    public static final String ROOT_ADMIN_EMAIL = "admin@example.com";
+
+    // 4. ADMIN: Cập nhật Role cho một User bất kỳ theo ID (Bảo vệ quyền Root Admin)
     @Transactional
-    public UserProfileResponse updateUserRoles(Long userId, UpdateUserRoleRequest request) {
-        User user = userRepository.findById(userId)
+    public UserProfileResponse updateUserRoles(Long userId, UpdateUserRoleRequest request, String currentAdminEmail) {
+        // 1. Chỉ Root Admin (admin@example.com) mới có quyền cấp hoặc thu hồi quyền Admin của người khác
+        if (!ROOT_ADMIN_EMAIL.equalsIgnoreCase(currentAdminEmail)) {
+            throw new IllegalArgumentException("Chỉ Quản trị viên tối cao (Root Admin: " + ROOT_ADMIN_EMAIL + ") mới có quyền phân quyền hoặc thay đổi quyền Quản trị viên!");
+        }
+
+        User targetUser = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy user với ID: " + userId));
+
+        // 2. Không thể tự thay đổi quyền hạn của chính tài khoản mình
+        if (targetUser.getEmail().equalsIgnoreCase(currentAdminEmail)) {
+            throw new IllegalArgumentException("Bạn không thể tự thay đổi vai trò hoặc quyền hạn của chính tài khoản mình!");
+        }
+
+        // 3. Tuyệt đối không cho phép hạ quyền của Root Admin
+        if (ROOT_ADMIN_EMAIL.equalsIgnoreCase(targetUser.getEmail()) && !request.getRoleNames().contains("ROLE_ADMIN")) {
+            throw new IllegalArgumentException("Tuyệt đối không thể hạ quyền Quản trị viên của tài khoản Root Admin (" + ROOT_ADMIN_EMAIL + ")!");
+        }
 
         Set<Role> updatedRoles = new HashSet<>();
         for (String roleName : request.getRoleNames()) {
@@ -58,8 +75,8 @@ public class UserService {
             updatedRoles.add(role);
         }
 
-        user.setRoles(updatedRoles);
-        return mapToProfileResponse(userRepository.save(user));
+        targetUser.setRoles(updatedRoles);
+        return mapToProfileResponse(userRepository.save(targetUser));
     }
 
     private User getUserByEmail(String email) {

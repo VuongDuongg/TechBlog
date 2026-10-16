@@ -75,6 +75,12 @@ export const userApi = {
   updateProfile: async (fullName: string): Promise<UserProfile> => {
     return (await axiosClient.put('/users/me', { fullName })) as unknown as UserProfile;
   },
+  getAll: async (page = 0, size = 100): Promise<PageResponse<UserProfile>> => {
+    return (await axiosClient.get(`/users?page=${page}&size=${size}`)) as unknown as PageResponse<UserProfile>;
+  },
+  updateRoles: async (userId: number, roleNames: string[]): Promise<UserProfile> => {
+    return (await axiosClient.put(`/users/${userId}/roles`, { roleNames })) as unknown as UserProfile;
+  },
 };
 
 // 3. Category Services
