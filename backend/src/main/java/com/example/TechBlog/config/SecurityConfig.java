@@ -2,7 +2,6 @@ package com.example.TechBlog.config;
 
 import com.example.TechBlog.security.JwtAuthEntryPoint;
 import com.example.TechBlog.security.JwtAuthenticationFilter;
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -26,11 +25,15 @@ import java.util.List;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-@RequiredArgsConstructor
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final JwtAuthEntryPoint unauthorizedHandler;
+
+    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter, JwtAuthEntryPoint unauthorizedHandler) {
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+        this.unauthorizedHandler = unauthorizedHandler;
+    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -85,7 +88,14 @@ public class SecurityConfig {
                 // Public tài liệu Swagger/OpenAPI
                 .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/api-docs/**", "/v3/api-docs/**").permitAll()
                 // Cho phép xem bài viết, chuyên mục, khóa học, bài học, tải file (GET) mà không bắt buộc đăng nhập
-                .requestMatchers(HttpMethod.GET, "/api/posts/**", "/api/categories/**", "/api/courses/**", "/api/lessons/**", "/api/files/**").permitAll()
+                .requestMatchers(HttpMethod.GET,
+                        "/api/posts", "/api/posts/**",
+                        "/api/courses", "/api/courses/**",
+                        "/api/categories", "/api/categories/**",
+                        "/api/v1/categories", "/api/v1/categories/**",
+                        "/api/lessons/**",
+                        "/api/files/**"
+                ).permitAll()
                 // Mọi request còn lại (Tạo bài viết, sửa, xóa, ...) đều bắt buộc đăng nhập
                 .anyRequest().authenticated()
             );

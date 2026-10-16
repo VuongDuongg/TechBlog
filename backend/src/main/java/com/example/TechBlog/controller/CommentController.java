@@ -4,7 +4,6 @@ import com.example.TechBlog.dto.CommentRequest;
 import com.example.TechBlog.dto.CommentResponse;
 import com.example.TechBlog.service.CommentService;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -15,10 +14,13 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api")
-@RequiredArgsConstructor
 public class CommentController {
 
     private final CommentService commentService;
+
+    public CommentController(CommentService commentService) {
+        this.commentService = commentService;
+    }
 
     // Lấy danh sách bình luận của bài viết (Public - ai cũng xem được)
     @GetMapping("/posts/{postId}/comments")

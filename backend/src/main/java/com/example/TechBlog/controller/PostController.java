@@ -4,7 +4,6 @@ import com.example.TechBlog.dto.PostRequest;
 import com.example.TechBlog.dto.PostResponse;
 import com.example.TechBlog.service.PostService;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -15,10 +14,13 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/posts")
-@RequiredArgsConstructor
 public class PostController {
 
     private final PostService postService;
+
+    public PostController(PostService postService) {
+        this.postService = postService;
+    }
 
     // GET /api/posts?page=0&size=10&sort=createdAt,desc
     @GetMapping

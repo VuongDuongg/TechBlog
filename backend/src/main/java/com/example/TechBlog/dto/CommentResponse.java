@@ -1,16 +1,11 @@
 package com.example.TechBlog.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class CommentResponse {
 
     private Long id;
@@ -20,4 +15,18 @@ public class CommentResponse {
     private String userFullName;
     private String userEmail;
     private LocalDateTime createdAt;
+
+    public CommentResponse() {
+    }
+
+    @Builder
+    public CommentResponse(Long id, String content, Long postId, Long userId, String userFullName, String userEmail, LocalDateTime createdAt) {
+        this.id = id;
+        this.content = content;
+        this.postId = postId;
+        this.userId = userId;
+        this.userFullName = userFullName;
+        this.userEmail = userEmail;
+        this.createdAt = createdAt;
+    }
 }

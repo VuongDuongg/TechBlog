@@ -7,15 +7,17 @@ import com.example.TechBlog.dto.CategoryRequest;
 import com.example.TechBlog.dto.CategoryResponse;
 import com.example.TechBlog.service.CategoryService;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/categories")
-@RequiredArgsConstructor
 public class CategoryController {
 
     private final CategoryService categoryService;
+
+    public CategoryController(CategoryService categoryService) {
+        this.categoryService = categoryService;
+    }
 
     @GetMapping
     public ResponseEntity<List<CategoryResponse>> getAll() {

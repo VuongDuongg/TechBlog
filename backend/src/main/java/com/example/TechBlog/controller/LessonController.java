@@ -4,7 +4,6 @@ import com.example.TechBlog.dto.LessonRequest;
 import com.example.TechBlog.dto.LessonResponse;
 import com.example.TechBlog.service.LessonService;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -14,10 +13,13 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/lessons")
-@RequiredArgsConstructor
 public class LessonController {
 
     private final LessonService lessonService;
+
+    public LessonController(LessonService lessonService) {
+        this.lessonService = lessonService;
+    }
 
     // Lấy tất cả bài học của một khóa học (Public)
     @GetMapping("/course/{courseId}")

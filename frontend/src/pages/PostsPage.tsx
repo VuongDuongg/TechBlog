@@ -27,13 +27,17 @@ export const PostsPage: React.FC = () => {
     const fetchInitialData = async () => {
       try {
         setLoading(true);
-        const [postsRes, catsRes] = await Promise.all([
+        const [postsRes, catsRes] = await Promise.allSettled([
           postApi.getAll(0, 100),
           categoryApi.getAll(),
         ]);
         if (isMounted) {
-          if (postsRes?.content) setPosts(postsRes.content);
-          if (catsRes) setCategories(catsRes);
+          if (postsRes.status === 'fulfilled' && postsRes.value?.content) {
+            setPosts(postsRes.value.content);
+          }
+          if (catsRes.status === 'fulfilled' && catsRes.value) {
+            setCategories(catsRes.value);
+          }
         }
       } catch (err) {
         console.error('Lỗi khi tải danh sách bài viết', err);

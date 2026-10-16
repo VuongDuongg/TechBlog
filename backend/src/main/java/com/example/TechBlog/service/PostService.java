@@ -10,7 +10,6 @@ import com.example.TechBlog.repository.CategoryRepository;
 import com.example.TechBlog.repository.PostRepository;
 import com.example.TechBlog.repository.UserRepository;
 import com.example.TechBlog.security.CustomUserDetails;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,12 +17,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@RequiredArgsConstructor
 public class PostService {
 
     private final PostRepository postRepository;
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
+
+    public PostService(PostRepository postRepository, CategoryRepository categoryRepository, UserRepository userRepository) {
+        this.postRepository = postRepository;
+        this.categoryRepository = categoryRepository;
+        this.userRepository = userRepository;
+    }
 
     // Lấy danh sách bài viết kèm phân trang (Public)
     public Page<PostResponse> getAllPosts(Pageable pageable) {

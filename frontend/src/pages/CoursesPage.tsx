@@ -26,13 +26,17 @@ export const CoursesPage: React.FC = () => {
     const fetchInitialData = async () => {
       try {
         setLoading(true);
-        const [coursesRes, catsRes] = await Promise.all([
+        const [coursesRes, catsRes] = await Promise.allSettled([
           courseApi.getAll(0, 100),
           categoryApi.getAll(),
         ]);
         if (isMounted) {
-          if (coursesRes?.content) setCourses(coursesRes.content);
-          if (catsRes) setCategories(catsRes);
+          if (coursesRes.status === 'fulfilled' && coursesRes.value?.content) {
+            setCourses(coursesRes.value.content);
+          }
+          if (catsRes.status === 'fulfilled' && catsRes.value) {
+            setCategories(catsRes.value);
+          }
         }
       } catch (err) {
         console.error('Lỗi khi tải danh sách khóa học', err);

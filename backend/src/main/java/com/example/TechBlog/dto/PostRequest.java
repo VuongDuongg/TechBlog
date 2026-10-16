@@ -2,15 +2,10 @@ package com.example.TechBlog.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 public class PostRequest {
 
     @NotBlank(message = "Title cannot be blank")
@@ -26,4 +21,16 @@ public class PostRequest {
 
     @NotNull(message = "Category ID cannot be null")
     private Long categoryId;
+
+    public PostRequest() {
+    }
+
+    @Builder
+    public PostRequest(String title, String slug, String content, String thumbnailUrl, Long categoryId) {
+        this.title = title;
+        this.slug = slug;
+        this.content = content;
+        this.thumbnailUrl = thumbnailUrl;
+        this.categoryId = categoryId;
+    }
 }

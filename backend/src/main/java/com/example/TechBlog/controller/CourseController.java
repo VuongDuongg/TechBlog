@@ -4,7 +4,6 @@ import com.example.TechBlog.dto.CourseRequest;
 import com.example.TechBlog.dto.CourseResponse;
 import com.example.TechBlog.service.CourseService;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -15,10 +14,13 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/courses")
-@RequiredArgsConstructor
 public class CourseController {
 
     private final CourseService courseService;
+
+    public CourseController(CourseService courseService) {
+        this.courseService = courseService;
+    }
 
     // Xem danh sách khóa học (Public - ai cũng xem được)
     @GetMapping

@@ -3,15 +3,10 @@ package com.example.TechBlog.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class LessonRequest {
 
     @NotBlank(message = "Tiêu đề bài học không được để trống")
@@ -25,4 +20,15 @@ public class LessonRequest {
 
     @NotNull(message = "Khóa học không được để trống")
     private Long courseId;
+
+    public LessonRequest() {
+    }
+
+    @Builder
+    public LessonRequest(String title, String content, Integer orderIndex, Long courseId) {
+        this.title = title;
+        this.content = content;
+        this.orderIndex = orderIndex;
+        this.courseId = courseId;
+    }
 }

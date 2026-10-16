@@ -8,21 +8,25 @@ import com.example.TechBlog.entity.User;
 import com.example.TechBlog.exception.ResourceNotFoundException;
 import com.example.TechBlog.repository.RoleRepository;
 import com.example.TechBlog.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service
-@RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+
+    public UserService(UserRepository userRepository, RoleRepository roleRepository) {
+        this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
+    }
 
     // 1. Lấy thông tin cá nhân dựa vào email trong JWT Token
     @Transactional(readOnly = true)
@@ -85,12 +89,17 @@ public class UserService {
     }
 
     private UserProfileResponse mapToProfileResponse(User user) {
+        List<String> roles = user.getRoles() != null
+                ? user.getRoles().stream().map(role -> role.getName()).toList()
+                : List.of();
+
         return UserProfileResponse.builder()
                 .id(user.getId())
                 .email(user.getEmail())
                 .fullName(user.getFullName())
-                .roles(user.getRoles().stream().map(Role::getName).toList())
+                .roles(roles)
                 .createdAt(user.getCreatedAt())
                 .build();
     }
 }
+

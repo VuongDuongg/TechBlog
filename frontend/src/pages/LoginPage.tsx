@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { authApi } from '../api/services';
 import { LogIn, Mail, Lock, AlertCircle, ArrowRight, Loader2, Sparkles } from 'lucide-react';
@@ -7,6 +7,8 @@ import { LogIn, Mail, Lock, AlertCircle, ArrowRight, Loader2, Sparkles } from 'l
 export const LoginPage: React.FC = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = (location.state as { from?: string })?.from || '/';
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -26,7 +28,7 @@ export const LoginPage: React.FC = () => {
       setIsLoading(true);
       const authData = await authApi.login({ email, password });
       login(authData);
-      navigate('/');
+      navigate(from, { replace: true });
     } catch (err: unknown) {
       const error = err as { response?: { data?: { message?: string } | string } };
       if (typeof error.response?.data === 'string') {

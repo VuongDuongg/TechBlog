@@ -1,7 +1,9 @@
 package com.example.TechBlog.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -12,12 +14,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "courses")
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
-@Builder
-
 public class Course {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,10 +35,9 @@ public class Course {
     private Category category;
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
     private List<Lesson> lessons = new ArrayList<>();
 
-    // THÊM DÒNG NÀY: Ảnh bìa khóa học
+    // Ảnh bìa khóa học
     private String thumbnailUrl;
 
     @CreationTimestamp
@@ -48,6 +45,20 @@ public class Course {
 
     @UpdateTimestamp
     private LocalDateTime updatedAt;
-    
-    
+
+    public Course() {
+    }
+
+    @Builder
+    public Course(Long id, String title, String description, BigDecimal price, Category category, List<Lesson> lessons, String thumbnailUrl, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.price = price;
+        this.category = category;
+        this.lessons = lessons != null ? lessons : new ArrayList<>();
+        this.thumbnailUrl = thumbnailUrl;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
 }

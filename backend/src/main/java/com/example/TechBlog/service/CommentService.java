@@ -9,19 +9,23 @@ import com.example.TechBlog.exception.ResourceNotFoundException;
 import com.example.TechBlog.repository.CommentRepository;
 import com.example.TechBlog.repository.PostRepository;
 import com.example.TechBlog.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@RequiredArgsConstructor
 public class CommentService {
 
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+
+    public CommentService(CommentRepository commentRepository, PostRepository postRepository, UserRepository userRepository) {
+        this.commentRepository = commentRepository;
+        this.postRepository = postRepository;
+        this.userRepository = userRepository;
+    }
 
     // 1. Xem danh sách bình luận của bài viết (Public)
     @Transactional(readOnly = true)

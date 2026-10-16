@@ -1,7 +1,9 @@
 package com.example.TechBlog.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
@@ -14,11 +16,8 @@ import java.time.LocalDateTime;
         @UniqueConstraint(columnNames = {"user_id", "course_id"})
     }
 )
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
-@Builder
 public class Enrollment {
 
     @Id
@@ -36,11 +35,9 @@ public class Enrollment {
     // Trạng thái khóa học: ACTIVE (Đang học), COMPLETED (Đã hoàn thành)
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
-    @Builder.Default
     private EnrollmentStatus status = EnrollmentStatus.ACTIVE;
 
     // Tiến độ học (từ 0% đến 100%)
-    @Builder.Default
     private Integer progress = 0;
 
     @CreationTimestamp
@@ -49,5 +46,20 @@ public class Enrollment {
     public enum EnrollmentStatus {
         ACTIVE,
         COMPLETED
+    }
+
+    public Enrollment() {
+        this.status = EnrollmentStatus.ACTIVE;
+        this.progress = 0;
+    }
+
+    @Builder
+    public Enrollment(Long id, User user, Course course, EnrollmentStatus status, Integer progress, LocalDateTime enrolledAt) {
+        this.id = id;
+        this.user = user;
+        this.course = course;
+        this.status = status != null ? status : EnrollmentStatus.ACTIVE;
+        this.progress = progress != null ? progress : 0;
+        this.enrolledAt = enrolledAt;
     }
 }

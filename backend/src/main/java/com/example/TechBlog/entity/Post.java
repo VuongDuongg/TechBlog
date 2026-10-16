@@ -1,7 +1,9 @@
 package com.example.TechBlog.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -9,13 +11,9 @@ import java.time.LocalDateTime;
 
 @Entity 
 @Table(name = "posts")
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
-@Builder 
-
-public class Post{
+public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -44,7 +42,20 @@ public class Post{
 
     @UpdateTimestamp
     private LocalDateTime updatedAt;
-    
 
-    
+    public Post() {
+    }
+
+    @Builder
+    public Post(Long id, String title, String slug, String content, String thumbnailUrl, Category category, User author, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        this.id = id;
+        this.title = title;
+        this.slug = slug;
+        this.content = content;
+        this.thumbnailUrl = thumbnailUrl;
+        this.category = category;
+        this.author = author;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
 }

@@ -5,15 +5,17 @@ import com.example.TechBlog.dto.CategoryRequest;
 import com.example.TechBlog.dto.CategoryResponse;
 import com.example.TechBlog.entity.Category;
 import com.example.TechBlog.repository.CategoryRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@RequiredArgsConstructor
 public class CategoryService {
 
     private final CategoryRepository categoryRepository;
+
+    public CategoryService(CategoryRepository categoryRepository) {
+        this.categoryRepository = categoryRepository;
+    }
 
     @Transactional(readOnly = true)
     public List<CategoryResponse> getAllCategories() {

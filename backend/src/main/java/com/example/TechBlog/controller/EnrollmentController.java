@@ -3,7 +3,6 @@ package com.example.TechBlog.controller;
 import com.example.TechBlog.dto.EnrollmentResponse;
 import com.example.TechBlog.dto.EnrollmentStatusResponse;
 import com.example.TechBlog.service.EnrollmentService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -14,10 +13,13 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/enrollments")
-@RequiredArgsConstructor
 public class EnrollmentController {
 
     private final EnrollmentService enrollmentService;
+
+    public EnrollmentController(EnrollmentService enrollmentService) {
+        this.enrollmentService = enrollmentService;
+    }
 
     // 1. Đăng ký khóa học (Bắt buộc đăng nhập)
     @PostMapping("/courses/{courseId}")

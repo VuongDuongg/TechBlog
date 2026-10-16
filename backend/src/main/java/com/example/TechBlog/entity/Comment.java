@@ -1,18 +1,17 @@
 package com.example.TechBlog.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "comments")
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
-@Builder
 public class Comment {
 
     @Id
@@ -34,4 +33,16 @@ public class Comment {
 
     @CreationTimestamp
     private LocalDateTime createdAt;
+
+    public Comment() {
+    }
+
+    @Builder
+    public Comment(Long id, String content, Post post, User user, LocalDateTime createdAt) {
+        this.id = id;
+        this.content = content;
+        this.post = post;
+        this.user = user;
+        this.createdAt = createdAt;
+    }
 }

@@ -38,16 +38,20 @@ export const CourseDetailPage: React.FC = () => {
       if (!courseId) return;
       try {
         setLoading(true);
-        const [courseRes, lessonsRes] = await Promise.all([
+        const [courseRes, lessonsRes] = await Promise.allSettled([
           courseApi.getById(courseId),
           lessonApi.getByCourseId(courseId),
         ]);
 
         if (isMounted) {
-          setCourse(courseRes);
-          setLessons(lessonsRes || []);
-          if (lessonsRes && lessonsRes.length > 0) {
-            setActiveLesson(lessonsRes[0]);
+          if (courseRes.status === 'fulfilled') {
+            setCourse(courseRes.value);
+          }
+          if (lessonsRes.status === 'fulfilled' && lessonsRes.value) {
+            setLessons(lessonsRes.value);
+            if (lessonsRes.value.length > 0) {
+              setActiveLesson(lessonsRes.value[0]);
+            }
           }
         }
 
@@ -75,7 +79,7 @@ export const CourseDetailPage: React.FC = () => {
 
   const handleEnroll = async () => {
     if (!isAuthenticated) {
-      navigate('/login');
+      navigate('/login', { state: { from: `/courses/${courseId}` } });
       return;
     }
 
@@ -322,7 +326,7 @@ export const CourseDetailPage: React.FC = () => {
                   ) : (
                     <>
                       <Sparkles className="w-4 h-4" />
-                      <span>Đăng ký tham gia ngay</span>
+                      <span>{isAuthenticated ? 'Đăng ký tham gia ngay' : 'Đăng nhập để tham gia'}</span>
                     </>
                   )}
                 </button>

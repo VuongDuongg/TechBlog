@@ -7,18 +7,21 @@ import com.example.TechBlog.entity.Lesson;
 import com.example.TechBlog.exception.ResourceNotFoundException;
 import com.example.TechBlog.repository.CourseRepository;
 import com.example.TechBlog.repository.LessonRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 public class LessonService {
 
     private final LessonRepository lessonRepository;
     private final CourseRepository courseRepository;
+
+    public LessonService(LessonRepository lessonRepository, CourseRepository courseRepository) {
+        this.lessonRepository = lessonRepository;
+        this.courseRepository = courseRepository;
+    }
 
     // 1. Lấy danh sách bài học của một khóa học theo thứ tự
     @Transactional(readOnly = true)

@@ -3,7 +3,6 @@ package com.example.TechBlog.controller;
 import com.example.TechBlog.dto.FileUploadResponse;
 import com.example.TechBlog.service.FileStorageService;
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -16,10 +15,13 @@ import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/files")
-@RequiredArgsConstructor
 public class FileController {
 
     private final FileStorageService fileStorageService;
+
+    public FileController(FileStorageService fileStorageService) {
+        this.fileStorageService = fileStorageService;
+    }
 
     // 1. Upload ảnh (Bắt buộc đăng nhập)
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

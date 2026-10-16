@@ -5,7 +5,6 @@ import com.example.TechBlog.dto.UpdateUserRoleRequest;
 import com.example.TechBlog.dto.UserProfileResponse;
 import com.example.TechBlog.service.UserService;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -16,10 +15,13 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/users")
-@RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     // 1. Lấy thông tin cá nhân của người đang đăng nhập (Bất kỳ user nào có đăng nhập)
     @GetMapping("/me")
