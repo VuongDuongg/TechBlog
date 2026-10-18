@@ -100,10 +100,47 @@ export const categoryApi = {
   },
 };
 
+export interface CourseQueryParams {
+  page?: number;
+  size?: number;
+  keyword?: string;
+  categoryId?: number;
+  isFree?: boolean;
+  sort?: string;
+}
+
+export interface PostQueryParams {
+  page?: number;
+  size?: number;
+  keyword?: string;
+  categoryId?: number;
+  sort?: string;
+}
+
 // 4. Course Services
 export const courseApi = {
-  getAll: async (page = 0, size = 9): Promise<PageResponse<Course>> => {
-    return (await axiosClient.get(`/courses?page=${page}&size=${size}`)) as unknown as PageResponse<Course>;
+  getAll: async (
+    paramsOrPage?: CourseQueryParams | number,
+    size = 9
+  ): Promise<PageResponse<Course>> => {
+    let queryParams: CourseQueryParams;
+    if (typeof paramsOrPage === 'number') {
+      queryParams = { page: paramsOrPage, size };
+    } else {
+      queryParams = paramsOrPage || {};
+    }
+
+    const query = new URLSearchParams();
+    if (queryParams.page !== undefined) query.append('page', queryParams.page.toString());
+    if (queryParams.size !== undefined) query.append('size', queryParams.size.toString());
+    if (queryParams.keyword) query.append('keyword', queryParams.keyword);
+    if (queryParams.categoryId) query.append('categoryId', queryParams.categoryId.toString());
+    if (queryParams.isFree !== undefined) query.append('isFree', queryParams.isFree.toString());
+    if (queryParams.sort) query.append('sort', queryParams.sort);
+
+    const queryString = query.toString();
+    const endpoint = queryString ? `/courses?${queryString}` : '/courses';
+    return (await axiosClient.get(endpoint)) as unknown as PageResponse<Course>;
   },
   getById: async (id: number): Promise<Course> => {
     return (await axiosClient.get(`/courses/${id}`)) as unknown as Course;
@@ -153,8 +190,27 @@ export const enrollmentApi = {
 
 // 7. Post Services
 export const postApi = {
-  getAll: async (page = 0, size = 9): Promise<PageResponse<Post>> => {
-    return (await axiosClient.get(`/posts?page=${page}&size=${size}`)) as unknown as PageResponse<Post>;
+  getAll: async (
+    paramsOrPage?: PostQueryParams | number,
+    size = 9
+  ): Promise<PageResponse<Post>> => {
+    let queryParams: PostQueryParams;
+    if (typeof paramsOrPage === 'number') {
+      queryParams = { page: paramsOrPage, size };
+    } else {
+      queryParams = paramsOrPage || {};
+    }
+
+    const query = new URLSearchParams();
+    if (queryParams.page !== undefined) query.append('page', queryParams.page.toString());
+    if (queryParams.size !== undefined) query.append('size', queryParams.size.toString());
+    if (queryParams.keyword) query.append('keyword', queryParams.keyword);
+    if (queryParams.categoryId) query.append('categoryId', queryParams.categoryId.toString());
+    if (queryParams.sort) query.append('sort', queryParams.sort);
+
+    const queryString = query.toString();
+    const endpoint = queryString ? `/posts?${queryString}` : '/posts';
+    return (await axiosClient.get(endpoint)) as unknown as PageResponse<Post>;
   },
   getById: async (id: number): Promise<Post> => {
     return (await axiosClient.get(`/posts/${id}`)) as unknown as Post;

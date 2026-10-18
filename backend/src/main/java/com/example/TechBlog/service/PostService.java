@@ -34,6 +34,28 @@ public class PostService {
         return postRepository.findAll(pageable).map(this::mapToResponse);
     }
 
+    // Tìm kiếm bài viết theo từ khóa và lọc theo danh mục (Sử dụng Specification chuẩn JPA, không lỗi PostgreSQL)
+    public Page<PostResponse> searchPosts(String keyword, Long categoryId, Pageable pageable) {
+        org.springframework.data.jpa.domain.Specification<Post> spec = (root, query, cb) -> {
+            java.util.List<jakarta.persistence.criteria.Predicate> predicates = new java.util.ArrayList<>();
+
+            if (keyword != null && !keyword.trim().isEmpty()) {
+                String pattern = "%" + keyword.trim().toLowerCase() + "%";
+                jakarta.persistence.criteria.Predicate titleLike = cb.like(cb.lower(root.get("title")), pattern);
+                jakarta.persistence.criteria.Predicate contentLike = cb.like(cb.lower(root.get("content")), pattern);
+                predicates.add(cb.or(titleLike, contentLike));
+            }
+
+            if (categoryId != null) {
+                predicates.add(cb.equal(root.get("category").get("id"), categoryId));
+            }
+
+            return cb.and(predicates.toArray(new jakarta.persistence.criteria.Predicate[0]));
+        };
+
+        return postRepository.findAll(spec, pageable).map(this::mapToResponse);
+    }
+
     // Lấy chi tiết bài viết theo ID (Public)
     public PostResponse getPostById(Long id) {
         Post post = postRepository.findById(id)

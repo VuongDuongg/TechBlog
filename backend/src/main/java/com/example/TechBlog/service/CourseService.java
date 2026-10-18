@@ -29,6 +29,37 @@ public class CourseService {
         return courseRepository.findAll(pageable).map(this::mapToResponse);
     }
 
+    // 1.1 Tìm kiếm và lọc khóa học nâng cao (Sử dụng Specification an toàn và tương thích 100% với PostgreSQL)
+    @Transactional(readOnly = true)
+    public Page<CourseResponse> searchCourses(String keyword, Long categoryId, Boolean isFree, Pageable pageable) {
+        org.springframework.data.jpa.domain.Specification<Course> spec = (root, query, cb) -> {
+            java.util.List<jakarta.persistence.criteria.Predicate> predicates = new java.util.ArrayList<>();
+
+            if (keyword != null && !keyword.trim().isEmpty()) {
+                String pattern = "%" + keyword.trim().toLowerCase() + "%";
+                jakarta.persistence.criteria.Predicate titleLike = cb.like(cb.lower(root.get("title")), pattern);
+                jakarta.persistence.criteria.Predicate descLike = cb.like(cb.lower(root.get("description")), pattern);
+                predicates.add(cb.or(titleLike, descLike));
+            }
+
+            if (categoryId != null) {
+                predicates.add(cb.equal(root.get("category").get("id"), categoryId));
+            }
+
+            if (isFree != null) {
+                if (isFree) {
+                    predicates.add(cb.equal(root.get("price"), java.math.BigDecimal.ZERO));
+                } else {
+                    predicates.add(cb.greaterThan(root.get("price"), java.math.BigDecimal.ZERO));
+                }
+            }
+
+            return cb.and(predicates.toArray(new jakarta.persistence.criteria.Predicate[0]));
+        };
+
+        return courseRepository.findAll(spec, pageable).map(this::mapToResponse);
+    }
+
     // 2. Lấy chi tiết một khóa học theo ID
     @Transactional(readOnly = true)
     public CourseResponse getCourseById(Long id) {

@@ -22,11 +22,13 @@ public class PostController {
         this.postService = postService;
     }
 
-    // GET /api/posts?page=0&size=10&sort=createdAt,desc
+    // GET /api/posts (Hỗ trợ tìm kiếm theo từ khóa keyword và lọc theo categoryId)
     @GetMapping
     public ResponseEntity<Page<PostResponse>> getAllPosts(
-            @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
-        return ResponseEntity.ok(postService.getAllPosts(pageable));
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) Long categoryId,
+            @PageableDefault(size = 9, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+        return ResponseEntity.ok(postService.searchPosts(keyword, categoryId, pageable));
     }
 
     // GET /api/posts/{id}

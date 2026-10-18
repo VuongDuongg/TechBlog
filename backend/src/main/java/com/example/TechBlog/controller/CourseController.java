@@ -22,11 +22,14 @@ public class CourseController {
         this.courseService = courseService;
     }
 
-    // Xem danh sách khóa học (Public - ai cũng xem được)
+    // Xem danh sách khóa học (Public - hỗ trợ tìm kiếm theo từ khóa, lọc danh mục, học phí)
     @GetMapping
     public ResponseEntity<Page<CourseResponse>> getAllCourses(
-            @PageableDefault(size = 10, sort = "createdAt") Pageable pageable) {
-        return ResponseEntity.ok(courseService.getAllCourses(pageable));
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) Long categoryId,
+            @RequestParam(required = false) Boolean isFree,
+            @PageableDefault(size = 9, sort = "createdAt") Pageable pageable) {
+        return ResponseEntity.ok(courseService.searchCourses(keyword, categoryId, isFree, pageable));
     }
 
     // Xem chi tiết khóa học (Public)

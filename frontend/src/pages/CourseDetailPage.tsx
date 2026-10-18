@@ -15,6 +15,8 @@ import {
   Loader2,
   AlertCircle,
   FileQuestion,
+  Search,
+  X,
 } from 'lucide-react';
 
 export const CourseDetailPage: React.FC = () => {
@@ -29,8 +31,16 @@ export const CourseDetailPage: React.FC = () => {
   const [enrolling, setEnrolling] = useState(false);
   const [activeLesson, setActiveLesson] = useState<Lesson | null>(null);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const [lessonSearch, setLessonSearch] = useState('');
 
   const courseId = Number(id);
+
+  const filteredLessons = React.useMemo(() => {
+    if (!lessonSearch.trim()) return lessons;
+    return lessons.filter((l) =>
+      l.title.toLowerCase().includes(lessonSearch.toLowerCase().trim())
+    );
+  }, [lessons, lessonSearch]);
 
   useEffect(() => {
     let isMounted = true;
@@ -237,11 +247,39 @@ export const CourseDetailPage: React.FC = () => {
 
             {/* Danh mục giáo trình bài học */}
             <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
-              <h3 className="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
-                <Layers className="w-5 h-5 text-indigo-600" /> Giáo trình khóa học ({lessons.length} bài)
-              </h3>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+                <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+                  <Layers className="w-5 h-5 text-indigo-600" /> Giáo trình khóa học ({lessons.length} bài)
+                </h3>
+                {lessons.length > 3 && (
+                  <div className="relative w-full sm:w-64">
+                    <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                    <input
+                      type="text"
+                      placeholder="Tìm bài học trong khóa..."
+                      value={lessonSearch}
+                      onChange={(e) => setLessonSearch(e.target.value)}
+                      className="w-full pl-9 pr-8 py-1.5 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-indigo-500 transition-colors"
+                    />
+                    {lessonSearch && (
+                      <button
+                        type="button"
+                        onClick={() => setLessonSearch('')}
+                        className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-0.5"
+                      >
+                        <X className="w-3.5 h-3.5" />
+                      </button>
+                    )}
+                  </div>
+                )}
+              </div>
               <div className="divide-y divide-slate-100">
-                {lessons.map((lesson) => {
+                {filteredLessons.length === 0 ? (
+                  <div className="py-6 text-center text-xs text-slate-500">
+                    Không tìm thấy bài học nào phù hợp với từ khóa "{lessonSearch}".
+                  </div>
+                ) : (
+                  filteredLessons.map((lesson) => {
                   const isSelected = activeLesson?.id === lesson.id;
                   const isLocked = !isEnrolled && lesson.orderIndex > 1;
 
@@ -280,7 +318,7 @@ export const CourseDetailPage: React.FC = () => {
                       </div>
                     </button>
                   );
-                })}
+                }))}
               </div>
             </div>
           </div>

@@ -18,6 +18,7 @@ import {
   Sparkles,
   Layers,
   Check,
+  Search,
 } from 'lucide-react';
 
 export const LearningPage: React.FC = () => {
@@ -34,6 +35,7 @@ export const LearningPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [toggling, setToggling] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [lessonSearch, setLessonSearch] = useState('');
 
   // 1. Kiểm tra xác thực & Tải dữ liệu khóa học, bài học, tiến độ
   useEffect(() => {
@@ -98,6 +100,14 @@ export const LearningPage: React.FC = () => {
   const completedLessonIdSet = useMemo(() => {
     return new Set(progress?.completedLessonIds || []);
   }, [progress]);
+
+  // Lọc bài học theo từ khóa tìm kiếm
+  const filteredLessons = useMemo(() => {
+    if (!lessonSearch.trim()) return lessons;
+    return lessons.filter((l) =>
+      l.title.toLowerCase().includes(lessonSearch.toLowerCase().trim())
+    );
+  }, [lessons, lessonSearch]);
 
   // Vị trí bài học hiện tại trong danh sách
   const currentLessonIndex = useMemo(() => {
@@ -393,9 +403,37 @@ export const LearningPage: React.FC = () => {
             </button>
           </div>
 
+          {/* Ô tìm kiếm bài học */}
+          <div className="p-3 border-b border-slate-800/80">
+            <div className="relative">
+              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+              <input
+                type="text"
+                placeholder="Tìm bài học..."
+                value={lessonSearch}
+                onChange={(e) => setLessonSearch(e.target.value)}
+                className="w-full pl-9 pr-8 py-1.5 rounded-lg bg-slate-800/80 border border-slate-700/60 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-indigo-500 transition-colors"
+              />
+              {lessonSearch && (
+                <button
+                  type="button"
+                  onClick={() => setLessonSearch('')}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white p-0.5"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              )}
+            </div>
+          </div>
+
           {/* Danh sách cuộn các bài học */}
           <div className="flex-1 overflow-y-auto divide-y divide-slate-800/60 p-2 space-y-1">
-            {lessons.map((lesson, idx) => {
+            {filteredLessons.length === 0 ? (
+              <div className="py-8 px-4 text-center text-xs text-slate-500">
+                Không tìm thấy bài học nào phù hợp.
+              </div>
+            ) : (
+              filteredLessons.map((lesson, idx) => {
               const isSelected = activeLesson?.id === lesson.id;
               const isCompleted = completedLessonIdSet.has(lesson.id);
 
@@ -443,7 +481,7 @@ export const LearningPage: React.FC = () => {
                   </div>
                 </div>
               );
-            })}
+            }))}
           </div>
         </aside>
       </div>
