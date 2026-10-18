@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { postApi, commentApi } from '../api/services';
 import type { Post, Comment } from '../types';
 import { useAuth } from '../context/AuthContext';
+import { ContentRenderer } from '../components/ContentRenderer';
 import {
   Calendar,
   ArrowLeft,
@@ -185,9 +186,13 @@ export const PostDetailPage: React.FC = () => {
           </div>
         )}
 
-        {/* Article Body */}
-        <div className="prose max-w-none text-slate-800 leading-relaxed text-base sm:text-lg whitespace-pre-line py-6">
-          {post.content}
+        {/* Article Body (Markdown, Code Highlighting, YouTube Embed) */}
+        <div className="py-6">
+          <ContentRenderer
+            content={post.content}
+            theme="light"
+            showVideoPlayer={true}
+          />
         </div>
 
         {/* ---------------- SECTION BÌNH LUẬN ---------------- */}

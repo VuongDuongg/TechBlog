@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { courseApi, lessonApi, enrollmentApi } from '../api/services';
 import type { Course, Lesson } from '../types';
 import { useAuth } from '../context/AuthContext';
+import { ContentRenderer } from '../components/ContentRenderer';
 import {
   Layers,
   CheckCircle2,
@@ -216,8 +217,12 @@ export const CourseDetailPage: React.FC = () => {
 
                   {/* Kiểm tra quyền xem nội dung: Nếu đã đăng ký HOẶC là bài học đầu tiên (preview) */}
                   {isEnrolled || activeLesson.orderIndex === 1 ? (
-                    <div className="prose max-w-none text-slate-700 leading-relaxed bg-slate-50 p-6 rounded-xl border border-slate-200/80 whitespace-pre-line text-sm sm:text-base">
-                      {activeLesson.content || 'Nội dung bài học đang được biên soạn chi tiết.'}
+                    <div className="bg-slate-50 p-6 sm:p-8 rounded-2xl border border-slate-200/80">
+                      <ContentRenderer
+                        content={activeLesson.content}
+                        theme="light"
+                        showVideoPlayer={true}
+                      />
                     </div>
                   ) : (
                     <div className="py-12 px-6 text-center bg-slate-50 rounded-xl border border-dashed border-slate-300 space-y-3">

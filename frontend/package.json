@@ -11,12 +11,16 @@
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.3",
+    "@types/prismjs": "^1.26.6",
     "axios": "^1.20.0",
     "clsx": "^2.1.1",
     "lucide-react": "^1.55.0",
+    "prismjs": "^1.30.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
+    "react-markdown": "^10.1.0",
     "react-router-dom": "^7.18.4",
+    "remark-gfm": "^4.0.1",
     "tailwind-merge": "^3.7.0"
   },
   "devDependencies": {

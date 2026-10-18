@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { courseApi, lessonApi, enrollmentApi } from '../api/services';
 import type { Course, Lesson, CourseProgress } from '../types';
 import { useAuth } from '../context/AuthContext';
+import { ContentRenderer } from '../components/ContentRenderer';
 import {
   ArrowLeft,
   ChevronLeft,
@@ -301,10 +302,14 @@ export const LearningPage: React.FC = () => {
                   </h2>
                 </div>
 
-                {/* Khung nội dung chi tiết của bài học */}
-                <article className="prose prose-invert max-w-none text-slate-200 leading-relaxed space-y-4">
-                  <div className="bg-slate-950/80 p-6 sm:p-8 rounded-2xl border border-slate-800/80 shadow-inner whitespace-pre-line text-sm sm:text-base leading-7 font-sans">
-                    {activeLesson.content || 'Nội dung bài học đang được biên soạn chi tiết.'}
+                {/* Khung nội dung chi tiết của bài học (Hỗ trợ Markdown, YouTube Embed & Syntax Highlighting) */}
+                <article className="max-w-none text-slate-200 leading-relaxed">
+                  <div className="bg-slate-950/80 p-6 sm:p-8 rounded-2xl border border-slate-800/80 shadow-inner">
+                    <ContentRenderer
+                      content={activeLesson.content}
+                      theme="dark"
+                      showVideoPlayer={true}
+                    />
                   </div>
                 </article>
               </div>
