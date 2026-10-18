@@ -105,7 +105,7 @@ public class EnrollmentService {
 
         List<LessonProgress> progresses = lessonProgressRepository.findByUserIdAndCourseId(user.getId(), courseId);
         List<Long> completedLessonIds = progresses.stream()
-                .filter(LessonProgress::isCompleted)
+                .filter(lp -> lp != null && lp.isCompleted() && lp.getLesson() != null)
                 .map(lp -> lp.getLesson().getId())
                 .toList();
 
@@ -168,7 +168,7 @@ public class EnrollmentService {
 
         List<LessonProgress> allProgresses = lessonProgressRepository.findByUserIdAndCourseId(user.getId(), courseId);
         List<Long> completedLessonIds = allProgresses.stream()
-                .filter(LessonProgress::isCompleted)
+                .filter(lp -> lp != null && lp.isCompleted() && lp.getLesson() != null)
                 .map(lp -> lp.getLesson().getId())
                 .toList();
 

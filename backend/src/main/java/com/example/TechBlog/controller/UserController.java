@@ -1,5 +1,6 @@
 package com.example.TechBlog.controller;
 
+import com.example.TechBlog.dto.ChangePasswordRequest;
 import com.example.TechBlog.dto.UpdateProfileRequest;
 import com.example.TechBlog.dto.UpdateUserRoleRequest;
 import com.example.TechBlog.dto.UserProfileResponse;
@@ -35,6 +36,15 @@ public class UserController {
             Authentication authentication,
             @Valid @RequestBody UpdateProfileRequest request) {
         return ResponseEntity.ok(userService.updateCurrentUserProfile(authentication.getName(), request));
+    }
+
+    // 2.1 Đổi mật khẩu của chính mình
+    @PutMapping("/change-password")
+    public ResponseEntity<String> changePassword(
+            Authentication authentication,
+            @Valid @RequestBody ChangePasswordRequest request) {
+        userService.changePassword(authentication.getName(), request);
+        return ResponseEntity.ok("Đổi mật khẩu thành công!");
     }
 
     // 3. ADMIN: Lấy danh sách toàn bộ người dùng

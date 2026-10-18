@@ -23,6 +23,12 @@ export interface RegisterPayload {
   password: string;
 }
 
+export interface ChangePasswordPayload {
+  currentPassword: string;
+  newPassword: string;
+  confirmPassword: string;
+}
+
 export interface EnrollmentStatus {
   enrolled: boolean;
   progress?: number;
@@ -75,6 +81,9 @@ export const userApi = {
   },
   updateProfile: async (fullName: string): Promise<UserProfile> => {
     return (await axiosClient.put('/users/me', { fullName })) as unknown as UserProfile;
+  },
+  changePassword: async (payload: ChangePasswordPayload): Promise<string> => {
+    return (await axiosClient.put('/users/change-password', payload)) as unknown as string;
   },
   getAll: async (page = 0, size = 100): Promise<PageResponse<UserProfile>> => {
     return (await axiosClient.get(`/users?page=${page}&size=${size}`)) as unknown as PageResponse<UserProfile>;

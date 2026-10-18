@@ -1,5 +1,6 @@
 package com.example.TechBlog.service;
 
+import com.example.TechBlog.dto.ChangePasswordRequest;
 import com.example.TechBlog.dto.UpdateProfileRequest;
 import com.example.TechBlog.dto.UpdateUserRoleRequest;
 import com.example.TechBlog.dto.UserProfileResponse;
@@ -10,6 +11,7 @@ import com.example.TechBlog.repository.RoleRepository;
 import com.example.TechBlog.repository.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,10 +24,12 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository, RoleRepository roleRepository) {
+    public UserService(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     // 1. Lấy thông tin cá nhân dựa vào email trong JWT Token
@@ -41,6 +45,27 @@ public class UserService {
         User user = getUserByEmail(currentUserEmail);
         user.setFullName(request.getFullName());
         return mapToProfileResponse(userRepository.save(user));
+    }
+
+    // 2.1 Đổi mật khẩu cho người dùng đang đăng nhập
+    @Transactional
+    public void changePassword(String currentUserEmail, ChangePasswordRequest request) {
+        if (!request.getNewPassword().equals(request.getConfirmPassword())) {
+            throw new IllegalArgumentException("Xác nhận mật khẩu mới không khớp!");
+        }
+
+        User user = getUserByEmail(currentUserEmail);
+
+        if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
+            throw new IllegalArgumentException("Mật khẩu hiện tại không chính xác!");
+        }
+
+        if (passwordEncoder.matches(request.getNewPassword(), user.getPassword())) {
+            throw new IllegalArgumentException("Mật khẩu mới không được trùng với mật khẩu hiện tại!");
+        }
+
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        userRepository.save(user);
     }
 
     // 3. ADMIN: Lấy danh sách tất cả user trong hệ thống (phân trang)
