@@ -1,5 +1,5 @@
 services:
-  # 1. Cơ sở dữ liệu PostgreSQL
+  # 1. Cơ sở dữ liệu PostgreSQL 16
   postgres:
     image: postgres:16-alpine
     container_name: techblog-postgres
@@ -12,10 +12,15 @@ services:
       - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d course_blog"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
     networks:
       - techblog-network
 
-  # 2. Backend Spring Boot
+  # 2. Backend Spring Boot (Chỉ khởi động khi PostgreSQL đã sẵn sàng tiếp nhận kết nối)
   backend:
     build:
       context: ./backend
@@ -23,9 +28,10 @@ services:
     container_name: techblog-backend
     restart: unless-stopped
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     environment:
-      # Khi chạy trong Docker network, backend kết nối đến postgres qua tên service 'postgres' và port nội bộ 5432
+      # Kết nối nội bộ qua mạng Docker bridge tới service 'postgres' ở port 5432
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/course_blog
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: password
@@ -33,8 +39,23 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      # Ánh xạ thư mục uploads ra máy chủ thật để ảnh không bị mất khi restart container
+      # Đồng bộ thư mục uploads ra máy chủ host để file ảnh/video không bị mất khi restart container
       - ./uploads:/app/uploads
+    networks:
+      - techblog-network
+
+  # 3. Frontend React (Vite + Nginx Reverse Proxy)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: techblog-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "3000:80"
+      - "80:80"
     networks:
       - techblog-network
 
