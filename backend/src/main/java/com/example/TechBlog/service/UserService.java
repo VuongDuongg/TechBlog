@@ -9,6 +9,7 @@ import com.example.TechBlog.entity.User;
 import com.example.TechBlog.exception.ResourceNotFoundException;
 import com.example.TechBlog.repository.RoleRepository;
 import com.example.TechBlog.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,11 +26,17 @@ public class UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
+    private final String rootAdminEmail;
 
-    public UserService(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
+    public UserService(
+            UserRepository userRepository,
+            RoleRepository roleRepository,
+            PasswordEncoder passwordEncoder,
+            @Value("${app.admin.email:admin@example.com}") String rootAdminEmail) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
+        this.rootAdminEmail = rootAdminEmail;
     }
 
     // 1. Lấy thông tin cá nhân dựa vào email trong JWT Token
@@ -74,14 +81,12 @@ public class UserService {
         return userRepository.findAll(pageable).map(this::mapToProfileResponse);
     }
 
-    public static final String ROOT_ADMIN_EMAIL = "admin@example.com";
-
     // 4. ADMIN: Cập nhật Role cho một User bất kỳ theo ID (Bảo vệ quyền Root Admin)
     @Transactional
     public UserProfileResponse updateUserRoles(Long userId, UpdateUserRoleRequest request, String currentAdminEmail) {
-        // 1. Chỉ Root Admin (admin@example.com) mới có quyền cấp hoặc thu hồi quyền Admin của người khác
-        if (!ROOT_ADMIN_EMAIL.equalsIgnoreCase(currentAdminEmail)) {
-            throw new IllegalArgumentException("Chỉ Quản trị viên tối cao (Root Admin: " + ROOT_ADMIN_EMAIL + ") mới có quyền phân quyền hoặc thay đổi quyền Quản trị viên!");
+        // 1. Chỉ Root Admin mới có quyền cấp hoặc thu hồi quyền Admin của người khác
+        if (!rootAdminEmail.equalsIgnoreCase(currentAdminEmail)) {
+            throw new IllegalArgumentException("Chỉ Quản trị viên tối cao (Root Admin: " + rootAdminEmail + ") mới có quyền phân quyền hoặc thay đổi quyền Quản trị viên!");
         }
 
         User targetUser = userRepository.findById(userId)
@@ -93,8 +98,8 @@ public class UserService {
         }
 
         // 3. Tuyệt đối không cho phép hạ quyền của Root Admin
-        if (ROOT_ADMIN_EMAIL.equalsIgnoreCase(targetUser.getEmail()) && !request.getRoleNames().contains("ROLE_ADMIN")) {
-            throw new IllegalArgumentException("Tuyệt đối không thể hạ quyền Quản trị viên của tài khoản Root Admin (" + ROOT_ADMIN_EMAIL + ")!");
+        if (rootAdminEmail.equalsIgnoreCase(targetUser.getEmail()) && !request.getRoleNames().contains("ROLE_ADMIN")) {
+            throw new IllegalArgumentException("Tuyệt đối không thể hạ quyền Quản trị viên của tài khoản Root Admin (" + rootAdminEmail + ")!");
         }
 
         Set<Role> updatedRoles = new HashSet<>();
