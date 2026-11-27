@@ -2,6 +2,7 @@ package com.example.TechBlog.config;
 
 import com.example.TechBlog.security.JwtAuthEntryPoint;
 import com.example.TechBlog.security.JwtAuthenticationFilter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -29,10 +30,30 @@ public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final JwtAuthEntryPoint unauthorizedHandler;
+    private final List<String> allowedOrigins;
 
-    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter, JwtAuthEntryPoint unauthorizedHandler) {
+    public SecurityConfig(
+            JwtAuthenticationFilter jwtAuthenticationFilter,
+            JwtAuthEntryPoint unauthorizedHandler,
+            @Value("${app.cors.allowed-origins:http://localhost:3000,http://localhost:5173,http://localhost:4200}") String allowedOriginsRaw) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
         this.unauthorizedHandler = unauthorizedHandler;
+        this.allowedOrigins = parseAllowedOrigins(allowedOriginsRaw);
+    }
+
+    static List<String> parseAllowedOrigins(String rawOrigins) {
+        if (rawOrigins == null || rawOrigins.isBlank()) {
+            throw new IllegalStateException("app.cors.allowed-origins must not be blank");
+        }
+        List<String> origins = Arrays.stream(rawOrigins.split(","))
+                .map(String::trim)
+                .map(origin -> origin.replaceAll("/+$", ""))
+                .filter(origin -> !origin.isEmpty())
+                .toList();
+        if (origins.isEmpty()) {
+            throw new IllegalStateException("app.cors.allowed-origins must contain at least one origin");
+        }
+        return origins;
     }
 
     @Bean
@@ -50,12 +71,8 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         
-        // Cho phép các nguồn gốc của Frontend (React, Vite, Vue, Next.js...)
-        configuration.setAllowedOrigins(Arrays.asList(
-                "http://localhost:3000",
-                "http://localhost:5173",
-                "http://localhost:4200"
-        ));
+        // Cho phép các nguồn gốc của Frontend đọc từ cấu hình môi trường
+        configuration.setAllowedOrigins(allowedOrigins);
         
         // Cho phép các phương thức HTTP
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));

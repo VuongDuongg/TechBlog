@@ -35,7 +35,19 @@ import {
   Lock,
 } from 'lucide-react';
 
-const ROOT_ADMIN_EMAIL = 'admin@example.com';
+const ROOT_ADMIN_EMAIL = import.meta.env.VITE_ROOT_ADMIN_EMAIL || 'admin@example.com';
+
+const resolveUploadedFileUrl = (fileUrl: string): string => {
+  if (fileUrl.startsWith('http://') || fileUrl.startsWith('https://')) {
+    return fileUrl;
+  }
+  const apiUrl = import.meta.env.VITE_API_URL as string | undefined;
+  if (apiUrl) {
+    const apiOrigin = apiUrl.replace(/\/api\/?$/, '');
+    return `${apiOrigin}${fileUrl}`;
+  }
+  return import.meta.env.PROD ? fileUrl : `http://localhost:8080${fileUrl}`;
+};
 
 export const AdminDashboardPage: React.FC = () => {
   const { isAuthenticated, isAdmin, user } = useAuth();
@@ -1034,9 +1046,7 @@ export const AdminDashboardPage: React.FC = () => {
                           try {
                             setUploadingCourseImg(true);
                             const res = await fileApi.upload(file);
-                            const fullUrl = res.fileUrl.startsWith('http')
-                              ? res.fileUrl
-                              : `http://localhost:8080${res.fileUrl}`;
+                            const fullUrl = resolveUploadedFileUrl(res.fileUrl);
                             setCourseForm((prev) => ({ ...prev, thumbnailUrl: fullUrl }));
                           } catch {
                             alert('Không thể tải ảnh lên. Vui lòng kiểm tra lại!');
@@ -1197,9 +1207,7 @@ export const AdminDashboardPage: React.FC = () => {
                           try {
                             setUploadingPostImg(true);
                             const res = await fileApi.upload(file);
-                            const fullUrl = res.fileUrl.startsWith('http')
-                              ? res.fileUrl
-                              : `http://localhost:8080${res.fileUrl}`;
+                            const fullUrl = resolveUploadedFileUrl(res.fileUrl);
                             setPostForm((prev) => ({ ...prev, thumbnailUrl: fullUrl }));
                           } catch {
                             alert('Không thể tải ảnh lên. Vui lòng kiểm tra lại!');
